@@ -2,19 +2,29 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { useState } from 'react';
 
 export default function Generate(){
+    const [topic, setTopic] = useState("");
     const [bg, setBg] = useState("");
     const bgArray = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpeg","6.avif"];
-    const qouteArray = ["Live Well", "Stay Healthy", "Be Happy", "Work Hard", "Play Hard", "Love Deeply", "Laugh Often", "Dream Big", "Stay Positive", "Embrace Change"];
-    const [quote, setQuote] = useState("");
+    const qouteArray: { [key: string]: string[] } = 
+    {
+        happiness:[ "Happiness is not out there, it's in you.","The purpose of our lives is to be happy.","Do more of what makes you happy."],
+        success:["Success is not final, failure is not fatal: It is the courage to continue that counts.","Success usually comes to those who are too busy to be looking for it.","The way to get started is to quit talking and begin doing."],
+    }
+    const [quote, setQuote] = useState<string[]>([]);
    
-   
+    
     const MakeChanges = () => {
-        const randomIndex = Math.floor(qouteArray.length * Math.random());
-        setQuote(qouteArray[randomIndex]);
+        const key = topic.toLowerCase().trim();
+        if (qouteArray[key]) {
+            setQuote(qouteArray[key].slice(0, 3));
+        } else {
+            setQuote(["No quotes found for this topic."]);
+        }
         setBg(`/` + bgArray[Math.floor(bgArray.length * Math.random())]);
     };
 
@@ -25,18 +35,26 @@ export default function Generate(){
             <div className='h-20'></div>
             <div >
               
-                <Card className='h-72 w-96'>
+                <Card className='h-96 w-96'>
                     <CardHeader className='text-center'>
                         <CardTitle className='text-2xl'>Quote Generator</CardTitle>
-                        <CardDescription>Click the button to Generate a quote</CardDescription>
+                        <CardDescription>Topices are: 
+                            <span className='text-cyan-950'> happiness, success</span>
+                        </CardDescription>
                         
                     </CardHeader>
                     <CardContent className='text-center'>
-                        <div className="m-2">
-                            <Button className="w-32 h-10" onClick={MakeChanges}>Generate</Button>
+                        <div className="">
+                            <Input  className="m-2 w-80" type="text" value={topic} onChange={(e) => setTopic(e.target.value)}/>
+                            <Button className="w-80 h-10" onClick={MakeChanges}>Generate</Button>
                         </div>
-                        <div className="m-8 "  >
-                            <h2 key={quote} className='text-4xl italic animate-fade'>{quote}</h2>
+                        <div className="m-2"  >
+                            {quote.map((q, i) => (
+                                <p key={i} className="text-cyan-950 italic animate-fade">
+                                    “{q}”
+                                </p>
+                         ))}
+                           
                         </div>
                     </CardContent>
                    
